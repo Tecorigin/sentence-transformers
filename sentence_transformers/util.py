@@ -685,9 +685,9 @@ def mine_hard_negatives(
         batch_size (int): Batch size for encoding the dataset. Defaults to 32.
         faiss_batch_size (int): Batch size for FAISS top-k search. Defaults to 16384.
         use_faiss (bool): Whether to use FAISS for similarity search. May be recommended for large datasets. Defaults to False.
-        use_multi_process (bool | List[str], optional): Whether to use multi-GPU/CPU processing. If True, uses all GPUs if CUDA
+        use_multi_process (bool | List[str], optional): Whether to use multi-GPU/CPU processing. If True, uses all GPUs if sdaa
             is available, and 4 CPU processes if it's not available. You can also pass a list of PyTorch devices like
-            ["cuda:0", "cuda:1", ...] or ["cpu", "cpu", "cpu", "cpu"].
+            ["sdaa:0", "sdaa:1", ...] or ["cpu", "cpu", "cpu", "cpu"].
         verbose (bool): Whether to print statistics and logging. Defaults to True.
         cache_folder (str, optional): Directory path for caching embeddings. If provided, the function will save
             ``query_embeddings_{hash}.npy`` and ``corpus_embeddings_{hash}.npy`` under this folder after the first run,
@@ -1248,11 +1248,11 @@ def http_get(url: str, path: str) -> None:
 
 def batch_to_device(batch: dict[str, Any], target_device: device) -> dict[str, Any]:
     """
-    Send a PyTorch batch (i.e., a dictionary of string keys to Tensors) to a device (e.g. "cpu", "cuda", "mps").
+    Send a PyTorch batch (i.e., a dictionary of string keys to Tensors) to a device (e.g. "cpu", "sdaa", "mps").
 
     Args:
         batch (Dict[str, Tensor]): The batch to send to the device.
-        target_device (torch.device): The target device (e.g. "cpu", "cuda", "mps").
+        target_device (torch.device): The target device (e.g. "cpu", "sdaa", "mps").
 
     Returns:
         Dict[str, Tensor]: The batch with tensors sent to the target device.
@@ -1369,8 +1369,8 @@ def community_detection(
         # Compute cosine similarity scores
         cos_scores = embeddings[start_idx : start_idx + batch_size] @ embeddings.T
 
-        # Use a torch-heavy approach if the embeddings are on CUDA, otherwise a loop-heavy one
-        if embeddings.device.type in ["cuda", "npu"]:
+        # Use a torch-heavy approach if the embeddings are on sdaa, otherwise a loop-heavy one
+        if embeddings.device.type in ["sdaa", "npu"]:
             # Threshold the cos scores and determine how many close embeddings exist per embedding
             threshold_mask = cos_scores >= threshold
             row_wise_count = threshold_mask.sum(1)
@@ -1627,19 +1627,19 @@ def get_device_name() -> str:
     Returns the name of the device where this module is running on.
 
     This function only supports single device or basic distributed training setups.
-    In distributed mode for cuda device, it uses the rank to assign a specific CUDA device.
+    In distributed mode for sdaa device, it uses the rank to assign a specific sdaa device.
 
     Returns:
-        str: Device name, like 'cuda:2', 'mps', 'npu', 'hpu', or 'cpu'
+        str: Device name, like 'sdaa:2', 'mps', 'npu', 'hpu', or 'cpu'
     """
-    if torch.cuda.is_available():
+    if torch.sdaa.is_available():
         if "LOCAL_RANK" in os.environ:
             local_rank = int(os.environ["LOCAL_RANK"])
-        elif torch.distributed.is_initialized() and torch.cuda.device_count() > torch.distributed.get_rank():
+        elif torch.distributed.is_initialized() and torch.sdaa.device_count() > torch.distributed.get_rank():
             local_rank = torch.distributed.get_rank()
         else:
             local_rank = 0
-        return f"cuda:{local_rank}"
+        return f"sdaa:{local_rank}"
     elif torch.backends.mps.is_available():
         return "mps"
     elif is_torch_npu_available():

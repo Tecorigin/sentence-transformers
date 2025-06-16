@@ -482,7 +482,7 @@ class FitMixin:
             if is_torch_npu_available():
                 scaler = torch.npu.amp.GradScaler()
             else:
-                scaler = torch.cuda.amp.GradScaler()
+                scaler = torch.sdaa.amp.GradScaler()
 
         if output_path is not None:
             os.makedirs(output_path, exist_ok=True)

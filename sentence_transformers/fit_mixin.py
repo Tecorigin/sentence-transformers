@@ -567,9 +567,9 @@ class FitMixin:
         ).replace("{FIT_PARAMETERS}", info_fit_parameters)
 
         if use_amp:
-            from torch.cuda.amp import autocast
+            from torch.sdaa.amp import autocast
 
-            scaler = torch.cuda.amp.GradScaler()
+            scaler = torch.sdaa.amp.GradScaler()
 
         self.to(self.device)
 

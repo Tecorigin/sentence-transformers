@@ -60,7 +60,7 @@ class StaticEmbedding(InputModule):
             # Pre-distilled embeddings:
             static_embedding = StaticEmbedding.from_model2vec("minishlab/potion-base-8M")
             # or distill your own embeddings:
-            static_embedding = StaticEmbedding.from_distillation("BAAI/bge-base-en-v1.5", device="cuda")
+            static_embedding = StaticEmbedding.from_distillation("BAAI/bge-base-en-v1.5", device="sdaa")
             # or start with randomized embeddings:
             tokenizer = Tokenizer.from_pretrained("FacebookAI/xlm-roberta-base")
             static_embedding = StaticEmbedding(tokenizer, embedding_dim=512)
@@ -181,7 +181,7 @@ class StaticEmbedding(InputModule):
         Args:
             model_name (str): The name of the model to distill.
             vocabulary (list[str] | None, optional): A list of vocabulary words to use. Defaults to None.
-            device (str): The device to run the distillation on (e.g., 'cpu', 'cuda'). If not specified,
+            device (str): The device to run the distillation on (e.g., 'cpu', 'sdaa'). If not specified,
                 the strongest device is automatically detected. Defaults to None.
             pca_dims (int | None, optional): The number of dimensions for PCA reduction. Defaults to 256.
             apply_zipf (bool): Whether to apply Zipf's law during distillation. Defaults to True.

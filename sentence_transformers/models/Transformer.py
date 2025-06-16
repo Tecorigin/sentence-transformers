@@ -276,7 +276,7 @@ class Transformer(InputModule):
             )
 
         # Default to the highest priority available provider if not specified
-        # E.g. Tensorrt > CUDA > CPU
+        # E.g. Tensorrt > sdaa > CPU
         model_args["provider"] = model_args.pop("provider", ort.get_available_providers()[0])
 
         load_path = Path(model_name_or_path)

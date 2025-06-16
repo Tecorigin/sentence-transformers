@@ -66,7 +66,7 @@ class CrossEncoder(nn.Module, PushToHubMixin, FitMixin):
         activation_fn (Callable, optional): Callable (like nn.Sigmoid) about the default activation function that
             should be used on-top of model.predict(). If None. nn.Sigmoid() will be used if num_labels=1,
             else nn.Identity(). Defaults to None.
-        device (str, optional): Device (like "cuda", "cpu", "mps", "npu") that should be used for computation. If None, checks if a GPU
+        device (str, optional): Device (like "sdaa", "cpu", "mps", "npu") that should be used for computation. If None, checks if a GPU
             can be used.
         cache_folder (`str`, `Path`, optional): Path to the folder where cached files are stored.
         trust_remote_code (bool, optional): Whether or not to allow for custom models defined on the Hub in their own modeling files.
@@ -311,7 +311,7 @@ class CrossEncoder(nn.Module, PushToHubMixin, FitMixin):
             )
 
         # Default to the highest priority available provider if not specified
-        # E.g. Tensorrt > CUDA > CPU
+        # E.g. Tensorrt > sdaa > CPU
         model_kwargs["provider"] = model_kwargs.pop("provider", ort.get_available_providers()[0])
 
         load_path = Path(model_name_or_path)

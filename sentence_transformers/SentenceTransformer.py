@@ -67,7 +67,7 @@ class SentenceTransformer(nn.Sequential, FitMixin, PeftAdapterMixin):
             from the Hugging Face Hub with that name.
         modules (Iterable[nn.Module], optional): A list of torch Modules that should be called sequentially, can be used to create custom
             SentenceTransformer models from scratch.
-        device (str, optional): Device (like "cuda", "cpu", "mps", "npu") that should be used for computation. If None, checks if a GPU
+        device (str, optional): Device (like "sdaa", "cpu", "mps", "npu") that should be used for computation. If None, checks if a GPU
             can be used.
         prompts (Dict[str, str], optional): A dictionary with prompts for the model. The key is the prompt name, the value is the prompt text.
             The prompt text will be prepended before any text to encode. For example:
@@ -111,7 +111,7 @@ class SentenceTransformer(nn.Sequential, FitMixin, PeftAdapterMixin):
               By default, if available, SDPA will be used for torch>=2.1.1. The default is otherwise the manual `"eager"`
               implementation.
             - ``provider``: If backend is "onnx", this is the provider to use for inference, for example "CPUExecutionProvider",
-              "CUDAExecutionProvider", etc. See https://onnxruntime.ai/docs/execution-providers/ for all ONNX execution providers.
+              "sdaaExecutionProvider", etc. See https://onnxruntime.ai/docs/execution-providers/ for all ONNX execution providers.
             - ``file_name``: If backend is "onnx" or "openvino", this is the file name to load, useful for loading optimized
               or quantized ONNX or OpenVINO models.
             - ``export``: If backend is "onnx" or "openvino", then this is a boolean flag specifying whether this model should
@@ -217,7 +217,6 @@ class SentenceTransformer(nn.Sequential, FitMixin, PeftAdapterMixin):
             from optimum.habana.transformers.modeling_utils import adapt_transformers_to_gaudi
 
             adapt_transformers_to_gaudi()
-
         if model_name_or_path is not None and model_name_or_path != "":
             logger.info(f"Load pretrained SentenceTransformer: {model_name_or_path}")
 
@@ -684,6 +683,7 @@ class SentenceTransformer(nn.Sequential, FitMixin, PeftAdapterMixin):
             features = batch_to_device(features, device)
             features.update(extra_features)
 
+
             with torch.no_grad():
                 out_features = self.forward(features, **kwargs)
                 if self.device.type == "hpu":
@@ -899,21 +899,22 @@ class SentenceTransformer(nn.Sequential, FitMixin, PeftAdapterMixin):
         and stop_multi_process_pool.
 
         Args:
-            target_devices (List[str], optional): PyTorch target devices, e.g. ["cuda:0", "cuda:1", ...],
-                ["npu:0", "npu:1", ...], or ["cpu", "cpu", "cpu", "cpu"]. If target_devices is None and CUDA/NPU
-                is available, then all available CUDA/NPU devices will be used. If target_devices is None and
-                CUDA/NPU is not available, then 4 CPU devices will be used.
+            target_devices (List[str], optional): PyTorch target devices, e.g. ["sdaa:0", "sdaa:1", ...],
+                ["npu:0", "npu:1", ...], or ["cpu", "cpu", "cpu", "cpu"]. If target_devices is None and sdaa/NPU
+                is available, then all available sdaa/NPU devices will be used. If target_devices is None and
+                sdaa/NPU is not available, then 4 CPU devices will be used.
 
         Returns:
             Dict[str, Any]: A dictionary with the target processes, an input queue, and an output queue.
         """
+        print("*********************")
         if target_devices is None:
-            if torch.cuda.is_available():
-                target_devices = [f"cuda:{i}" for i in range(torch.cuda.device_count())]
+            if torch.sdaa.is_available():
+                target_devices = [f"sdaa:{i}" for i in range(torch.sdaa.device_count())]
             elif is_torch_npu_available():
                 target_devices = [f"npu:{i}" for i in range(torch.npu.device_count())]
             else:
-                logger.info("CUDA/NPU is not available. Starting 4 CPU workers")
+                logger.info("sdaa/NPU is not available. Starting 4 CPU workers")
                 target_devices = ["cpu"] * 4
 
         logger.info("Start multi-process pool on devices: {}".format(", ".join(map(str, target_devices))))
