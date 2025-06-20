@@ -22,7 +22,7 @@ For the **full documentation**, see **[www.SBERT.net](https://www.sbert.net)**.
 
 ## Installation for SDAA
 
-We recommend **Python 3.9+**, **PyTorch for SDAA**.
+We recommend **Python 3.10.0**, **PyTorch for SDAA**.
 
 ````
 cd dist
