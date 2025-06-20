@@ -25,6 +25,7 @@ For the **full documentation**, see **[www.SBERT.net](https://www.sbert.net)**.
 We recommend **Python 3.9+**, **PyTorch for SDAA**.
 
 ````
+cd dist
 pip install sentence_transformers-4.2.0.dev0-py3-none-any.whl
 
 pip install deepspeed-0.14.4+d1ba6ab-py3-none-any.whl
