@@ -20,38 +20,26 @@ A wide selection of over [10,000 pre-trained Sentence Transformers models](https
 
 For the **full documentation**, see **[www.SBERT.net](https://www.sbert.net)**.
 
-## Installation
+## Installation for SDAA
 
-We recommend **Python 3.9+**, **[PyTorch 1.11.0+](https://pytorch.org/get-started/locally/)**, and **[transformers v4.34.0+](https://github.com/huggingface/transformers)**.
-
-**Install with pip**
-
-```
-pip install -U sentence-transformers
-```
-
-**Install with conda**
-
-```
-conda install -c conda-forge sentence-transformers
-```
-
-**Install from sources**
-
-Alternatively, you can also clone the latest version from the [repository](https://github.com/UKPLab/sentence-transformers) and install it directly from the source code:
+We recommend **Python 3.9+**, **PyTorch for SDAA**.
 
 ````
-pip install -e .
+pip install sentence_transformers-4.2.0.dev0-py3-none-any.whl
+
+pip install deepspeed-0.14.4+d1ba6ab-py3-none-any.whl
+pip install transformers-4.42.4-py3-none-any.whl
+pip install accelerate-0.31.0-py3-none-any.whl
 ```` 
-
-**PyTorch with CUDA**
-
-If you want to use a GPU / CUDA, you must install PyTorch with the matching CUDA Version. Follow
-[PyTorch - Get Started](https://pytorch.org/get-started/locally/) for further details how to install PyTorch.
 
 ## Getting Started
 
 See [Quickstart](https://www.sbert.net/docs/quickstart.html) in our documentation.
+
+### Train
+````python
+bash run.sh
+````
 
 ### Embedding Models
 
